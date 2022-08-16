@@ -15,6 +15,7 @@ function AuthProvider({ children }) {
     const [loading, setLoading] = useState(false);
     async function signUp(name, password, email, confirm) {
         try {
+            setLoading(true);
             console.log("signup will be here");
             let res = await axios.post
                 ("/api/v1/auth/signup", {
@@ -23,10 +24,14 @@ function AuthProvider({ children }) {
                     confirmPassword: confirm,
                     email
                 })
-            console.log("data", res.data);
+            if(res.status == 400){
+                alert("invalid entry")
+            }
+            setLoading(false);
 
         } catch (err) {
             console.log("err", err.message);
+            setLoading(false);
         }
     }
     async function login(email, password) {
@@ -36,9 +41,20 @@ function AuthProvider({ children }) {
                 email: email,
                 password: password
             });
-            setLoading(false);
-            // console.log("40",res.data);
-            userSet(res.data.user);
+
+            if(res.status == 404){
+                alert("Email or password not found")
+            }
+            else if(res.status == 400){
+                alert("user Not found kindly login ")
+            }
+            else if(res.status == 500){
+                alert("Internal Server Error")
+            }
+            else{
+                setLoading(false);
+                userSet(res.data.user);
+            }
         }
         catch (err) {
             console.log(err);

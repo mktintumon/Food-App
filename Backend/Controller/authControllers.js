@@ -10,9 +10,13 @@ async function signupController(req, res){
         // to create a document inside userModel
         let newUser = await FoodUserModel.create(data);
         console.log(newUser);
-        res.end("data recieved");
+        res.status(201).json({
+            result : "User signed up successfully"
+        })
     } catch (err) {
-        res.end(err.message);
+        res.status(400).json({
+            result : err.message
+        })
     }
 }
 
@@ -34,23 +38,35 @@ async function loginController(req, res){
                     }, secrets.JWTSECRETS);
 
                     res.cookie("JWT", token);
-                    res.end("Login successful!");
+                    
+                    delete user.password;
+                    delete user.confirmPassword;
+
+                    res.status(200).json({
+                        user
+                    })
                 }
                 else {
-                    res.end("Wrong password. Login failed!");
+                    res.status(400).json({
+                        result : "Wrong password. Login failed!"
+                    })
                 }
             }
             else {
-                res.end("User with this email not exists");
+                res.status(404).json({
+                    result : "User not found",
+                })
             }
         }
         else {
-            res.end("Kindly Enter your email and password both!");
+            res.status(400).json({
+                result : "User not found . Kindly signUp!"
+            })
         }
-
-
     } catch (err) {
-        res.end(err.message);
+        res.status(500).json({
+            result : err.message,
+        })
     }
 }
 
