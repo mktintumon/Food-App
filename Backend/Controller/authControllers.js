@@ -79,7 +79,7 @@ async function forgetPasswordController(req, res) {
         // new =true -> you will get updated doc
         // email -> do we have a user -> no user 
         // update
-        let user = await FooduserModel.findOne({ email });
+        let user = await FoodUserModel.findOne({ email });
         if (user) {
             let otp = otpGenerator();
             let afterFiveMin = Date.now() + 5 * 60 * 1000;
@@ -119,13 +119,13 @@ async function resetPasswordController(req, res) {
             user.otpExpiry = undefined;
             await user.save();
 
-            res.json({
+            res.status(200).json({
                 message: "Otp Expired"
             })
         }
         else {
             if (user.otp != otp) {
-                res.json({
+                res.status(200)({
                     message: "Otp doesn't match"
                 })
             }
@@ -140,7 +140,7 @@ async function resetPasswordController(req, res) {
                 user.otpExpiry = undefined;
                 await user.save();
 
-                res.json({
+                res.status(201).json({
                     data: user,
                     message: "Password for the user resets"
                 })
@@ -150,7 +150,10 @@ async function resetPasswordController(req, res) {
         console.log(user);
 
     } catch (error) {
-        res.end(error.message);
+        console.log(err);
+        res.status(500).json({
+            result: err.message
+        });
     }
 }
 
