@@ -25,7 +25,7 @@ mongoose
 
 
 // Creating SCHEMA---> only entries written will be added to your db AND nothing else will be added 
-let userSchema = mongoose.Schema({
+let userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Name is required"],

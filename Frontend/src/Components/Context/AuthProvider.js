@@ -15,7 +15,7 @@ function AuthProvider({ children }) {
     const [loading, setLoading] = useState(false);
     const [resetPassEmail, setResetEmail] = useState(null);
     const [otpPassEmail, setOtpPassEmail] = useState(null);
-    
+
     async function signUp(name, password, email, confirm) {
         try {
             setLoading(true);
@@ -27,13 +27,17 @@ function AuthProvider({ children }) {
                     confirmPassword: confirm,
                     email
                 })
-            if(res.status == 400){
+            if (res.status == 400) {
                 alert("invalid entry")
             }
             setLoading(false);
 
         } catch (err) {
             console.log("err", err.message);
+            console.log("err", err.message);
+            if (err.message == "Request failed with status code 400") {
+                alert("improper user data entry")
+            }
             setLoading(false);
         }
     }
@@ -45,22 +49,29 @@ function AuthProvider({ children }) {
                 password: password
             });
 
-            if(res.status == 404){
+            if (res.status == 404) {
                 alert("Email or password not found")
             }
-            else if(res.status == 400){
+            else if (res.status == 400) {
                 alert("user Not found kindly login ")
             }
-            else if(res.status == 500){
+            else if (res.status == 500) {
                 alert("Internal Server Error")
             }
-            else{
+            else {
                 setLoading(false);
                 userSet(res.data.user);
             }
         }
         catch (err) {
             console.log(err);
+            if (err.message == "Request failed with status code 404") {
+                alert("Password or email may be wrong");
+            } else if (err.message == "Request failed with status code 400") {
+                alert("user not found kindly login");
+            } else if (err.message == "Request failed with status code 500") {
+                alert("Internal server error");
+            }
             setLoading(false);
         }
         console.log("login will be here");
