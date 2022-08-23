@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 const secrets = require("../secrets");
 const FoodUserModel = require("../Model/userModel");
+const mailSender = require('../mailSender')
 
-async function signupController(req, res){
+async function signupController(req, res) {
     // name-->password-->confirmpassword-->phonenumber-->email-->address
     try {
         let data = req.body;
@@ -11,16 +12,16 @@ async function signupController(req, res){
         let newUser = await FoodUserModel.create(data);
         console.log(newUser);
         res.status(201).json({
-            result : "User signed up successfully"
+            result: "User signed up successfully"
         })
     } catch (err) {
         res.status(400).json({
-            result : err.message
+            result: err.message
         })
     }
 }
 
-async function loginController(req, res){
+async function loginController(req, res) {
     try {
         let data = req.body;
         let { email, password } = data;
@@ -38,7 +39,7 @@ async function loginController(req, res){
                     }, secrets.JWTSECRETS);
 
                     res.cookie("JWT", token);
-                    
+
                     delete user.password;
                     delete user.confirmPassword;
 
@@ -48,52 +49,62 @@ async function loginController(req, res){
                 }
                 else {
                     res.status(400).json({
-                        result : "Wrong password. Login failed!"
+                        result: "Wrong password. Login failed!"
                     })
                 }
             }
             else {
                 res.status(404).json({
-                    result : "User not found",
+                    result: "User not found",
                 })
             }
         }
         else {
             res.status(400).json({
-                result : "User not found . Kindly signUp!"
+                result: "User not found . Kindly signUp!"
             })
         }
     } catch (err) {
         res.status(500).json({
-            result : err.message,
+            result: err.message,
         })
     }
 }
 
-async function forgetPasswordController(req, res){
+async function forgetPasswordController(req, res) {
     try {
         let { email } = req.body;
-        let expiryTime = Date.now() + 5 * 60 * 1000; // 5 minutes
-        let otp = otpGenerator();
+        //    mail
+        // by default -> FindAndUpdate -> not updated send document, 
+        // new =true -> you will get updated doc
+        // email -> do we have a user -> no user 
+        // update
+        let user = await FooduserModel.findOne({ email });
+        if (user) {
+            let otp = otpGenerator();
+            let afterFiveMin = Date.now() + 5 * 60 * 1000;
 
-        let user = await FoodUserModel.findOneAndUpdate({
-            email: email,
-        },
-            { otp: otp, otpExpiry: expiryTime },
-            { new: true });
+            await mailSender(email, otp);
 
-        console.log(user);
-        res.json({
-            data: user,
-            "message": "OTP has been sent successfully"
-        })
-
-    } catch (error) {
-        res.end(error.message);
+            user.otp = otp;
+            user.otpExpiry = afterFiveMin;
+            await user.save();
+            
+            res.status(204).json({
+                data: user,
+                result: "Otp send to your mail"
+            })
+        } else {
+            res.status(404).json({
+                result: "user with this email not found"
+            })
+        }
+    } catch (err) {
+        res.status(500).json(err.message);
     }
 }
 
-async function resetPasswordController(req, res){
+async function resetPasswordController(req, res) {
     try {
         let { otp, password, confirmPassword, email } = req.body;
 

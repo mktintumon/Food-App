@@ -13,6 +13,7 @@ function AuthProvider({ children }) {
     // const history = useHistory();
     const [user, userSet] = useState("");
     const [loading, setLoading] = useState(false);
+    
     async function signUp(name, password, email, confirm) {
         try {
             setLoading(true);
