@@ -27,5 +27,5 @@ let planSchema = new mongoose.Schema({
     }
 });
 
-const FooduserModel = mongoose.model('FoodPlanModel', planSchema);
+const FoodPlanModel = mongoose.model('FoodPlanModel', planSchema);
 module.exports = FoodPlanModel;

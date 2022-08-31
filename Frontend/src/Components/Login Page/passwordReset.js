@@ -68,7 +68,7 @@ function PasswordReset() {
                                 </div>
                                 <button className="loginBtn  form-button"
                                     onClick={resetPassword}>
-                                    Send OTP
+                                    RESET
                                 </button>
 
                             </div>

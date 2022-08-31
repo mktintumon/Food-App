@@ -6,15 +6,18 @@ import { Link } from 'react-router-dom';
 
 function AllPlans() {
     const [arr, arrset] = useState([]);
+
     useEffect(async () => {
         try {
-            const data = await axios.get("/api/plans?page=1&&limit=3");
-            console.log(data.data);
-            arrset(data.data.data);
+            const res = await axios.get("/api/v1/plan");
+            //console.log(res.data.Allplans);
+            arrset(res.data.Allplans);
         } catch (err) {
             console.log(err);
         }
     }, [])
+
+
     return (
         <div className='allplansCard'>
             <div className='h1Box'>
@@ -31,17 +34,17 @@ function AllPlans() {
                                     <div className='price'>Rs {ele.price}</div>
                                     <div className="duration">/month</div>
                                 </div>
-                                <p className="point">That’s only 2₹ per meal</p>
+                                <p className="point">That’s only ₹{Math.floor(ele.price/ele.duration)} per meal</p>
                             </div>
 
                             <div className='pCard2'>
                                 <div className='ppoints'>
                                     <img src={Tick} alt='' className='img' />
-                                    <p className='point'>{ele.duration} meal every day</p>
+                                    <p className='point'>{ele.duration} Meal Every Month</p>
                                 </div>
                                 <div className='ppoints'>
                                     <img src={Tick} alt='' className='img' />
-                                    <p className='point'>{ele.discount} discount available.</p>
+                                    <p className='point'>{ele.discount}% discount available.</p>
                                 </div>
                                 <div className='ppoints'>
                                     <img src={Tick} alt='' className='img' />
@@ -49,7 +52,7 @@ function AllPlans() {
                                 </div>
                             </div>
 
-                            <button className='btn'> <Link to={`/planDetail/${ele._id}`} >I'm Hungry</Link></button>
+                            <button className='btn' style={{"margin-top":"20px"}}> <Link to={`/planDetail/${ele._id}`} >I'm Hungry</Link></button>
                         </div>
                     )}
 

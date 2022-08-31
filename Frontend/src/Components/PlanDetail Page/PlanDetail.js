@@ -38,14 +38,14 @@ function PlanDetail() {
         const reviews = await axios.get("/api/getReview/" + id);
         setarr(reviews.data.reviews);
     }
-    const handleDelete = async() =>{
-        try{
+    const handleDelete = async () => {
+        try {
             let data = await axios.delete("/", {
                 "id": id
             });
             alert(data);
         }
-        catch(err){
+        catch (err) {
             alert(err);
         }
     }

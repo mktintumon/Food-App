@@ -19,7 +19,7 @@ async function mailSender(email , token) {
     let info = await transporter.sendMail({
         from: '"Mktintumon👻" <mktintumon@gmail.com>', // sender address
         to: email, // list of receivers
-        subject: "Hello ✔ ", // Subject line
+        subject: "Password Reset requested", // Subject line
         html: `<b>Your reset token is :-> ${token}</b>`,
     });
 }

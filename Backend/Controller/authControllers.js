@@ -149,7 +149,7 @@ async function resetPasswordController(req, res) {
 
         console.log(user);
 
-    } catch (error) {
+    } catch (err) {
         console.log(err);
         res.status(500).json({
             result: err.message
