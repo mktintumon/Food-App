@@ -12,6 +12,7 @@ function PlanDetail() {
     const [review, setreview] = useState("");
     const [rate, setrate] = useState();
     const { user } = useAuth();
+    
     useEffect(async () => {
         const data = await axios.get(`/api/plans/${id}`)
         console.log(data.data.data);

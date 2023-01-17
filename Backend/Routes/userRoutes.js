@@ -6,9 +6,9 @@ const { getAllUsersController, profileController }
     = require('../Controller/userControllers')
 
 // Get All user information from database
-userRouter.get('/users', protectRoute, getAllUsersController)
+userRouter.get('/', protectRoute, getAllUsersController)
 
 // Get single user information from database -- profile details
-userRouter.get('/user', protectRoute, profileController)
+userRouter.get('/profile', protectRoute, profileController)
 
 module.exports = userRouter
